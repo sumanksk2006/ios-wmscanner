@@ -70,7 +70,6 @@ class AVScannerController: UIViewController {
     private let session = AVCaptureSession()
     private let sessionQueue = DispatchQueue(label: "session queue")
     private var setupResult: VideoSessionSetupResult = .success
-    private var isSessionActive = false
     var videoDeviceInput: AVCaptureDeviceInput!
     private var isSessionRunning = false
 
@@ -114,13 +113,13 @@ class AVScannerController: UIViewController {
         self.navigationItem.title = "Scanner"
         self.navigationController?.navigationBar.tintColor = .white
         self.navigationController?.presentationController?.delegate = self
+        self.setSubscriberForTargetTypes()
 
         sessionQueue.async {
             switch self.setupResult {
             case .success:
                 self.addObservers()
                 self.session.startRunning()
-                self.isSessionActive = self.session.isRunning
             
             case .notAuthorized:
                 DispatchQueue.main.async {
@@ -352,8 +351,6 @@ class AVScannerController: UIViewController {
                 self.zoomSlider.maximumValue = Float(min(self.videoDeviceInput.device.activeFormat.videoMaxZoomFactor, CGFloat(8.0)))
                 self.zoomSlider.value = Float(self.videoDeviceInput.device.videoZoomFactor)
             }
-            
-            self.setSubscriberForTargetTypes()
         } else {
             print("Could not add metadata output to the session")
             setupResult = .configurationFailed
@@ -388,7 +385,6 @@ class AVScannerController: UIViewController {
 extension AVScannerController: AVCaptureMetadataOutputObjectsDelegate {
     
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
-        
         if drawingSemaphore.wait(timeout: .now()) == .success {
             DispatchQueue.main.async {
                 self.removeBarcodeOverlayLayers()
@@ -420,7 +416,6 @@ extension AVScannerController: AVCaptureMetadataOutputObjectsDelegate {
     private func createMetadataObjectOverlayWithMetadataObject(_ metadataObject: AVMetadataObject) -> (MetadataObjectLayer, String?) {
         // Transform the metadata object so the bounds are updated to reflect those of the video preview layer.
         let transformedMetadataObject = cameraScanView.videoPreviewLayer.transformedMetadataObject(for: metadataObject)
-        
         // Create the initial metadata object overlay layer that can be used for either machine readable codes or faces.
         let metadataObjectOverlayLayer = MetadataObjectLayer()
         metadataObjectOverlayLayer.metadataObject = transformedMetadataObject
