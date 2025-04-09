@@ -38,6 +38,11 @@ AVScannerController - checks camera permission, configures session and handles m
 
 ViewController implements UIAdaptivePresentationControllerDelegate to publish scanned codes on dismiss of the scanner via ViewModel.
 
+![AVCapture Scanner](https://github.com/user-attachments/assets/6c9657be-9a41-433b-89c1-d1353f0df58b)
+
+Reference: https://developer.apple.com/documentation/avfoundation/avcambarcode-detecting-barcodes-and-faces
+
+
 ## VisionKit DataScanner:
 This is available from iOS 16+. VisionKit's scanner has ability to scan text, barcode with quality assurance. Customization is very limited compared to AVFoundation.
 
@@ -50,6 +55,6 @@ func dataScanner(_ dataScanner: DataScannerViewController, didAdd addedItems: [R
 ```
 With dataScanner, we wouldn't get type of barcode. So, client app would not be able to display barcodel model type.
 
-
+![VisionKit Scanner](https://github.com/user-attachments/assets/2a1a79f6-82c3-4ad5-afbf-30f70d9934f2)
 
 
