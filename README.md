@@ -48,6 +48,7 @@ VisionKitScanCoordinator implements DataScannerViewControllerDelegate to publish
 ```swift
 func dataScanner(_ dataScanner: DataScannerViewController, didAdd addedItems: [RecognizedItem], allItems: [RecognizedItem])
 ```
+With dataScanner, we wouldn't get type of barcode. So, client app would not be able to display barcodel model type.
 
 
 
